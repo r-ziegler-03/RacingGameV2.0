@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "UI_InputActions",
+    "maps": [
+        {
+            "name": "UIMapping",
+            "id": "e5433470-8d26-44fe-a6dc-3ed4f4e535df",
+            "actions": [
+                {
+                    "name": "Escape",
+                    "type": "Button",
+                    "id": "70be9144-c54e-4bbb-a1e1-0fe89a3ffa75",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0ee72a0d-9feb-4d54-b833-0b9a74c54ff4",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
