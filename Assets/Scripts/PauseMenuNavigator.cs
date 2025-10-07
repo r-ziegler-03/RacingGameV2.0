@@ -18,10 +18,10 @@ public class PauseMenuNavigator : MonoBehaviour
 
     private void Awake()
     {
-        settingsScreenButton.onClick.AddListener((() => screenSwitcher.SwitchScreen(ScreenTypes.Settings)));
-        returnToPauseMenuButton.onClick.AddListener((() => screenSwitcher.SwitchScreen(ScreenTypes.Pause)));
-        mainMenuButton.onClick.AddListener((() => SceneManager.LoadScene(mainMenuSceneName)));
-        gameOverReturnToMainMenuButton.onClick.AddListener((() => SceneManager.LoadScene(mainMenuSceneName)));
-        resumeButton.onClick.AddListener((() => pauseScreenHandler.TogglePauseScreen()));
+        settingsScreenButton?.onClick.AddListener((() => screenSwitcher.SwitchScreen(ScreenTypes.Settings)));
+        returnToPauseMenuButton?.onClick.AddListener((() => screenSwitcher.SwitchScreen(ScreenTypes.Pause)));
+        mainMenuButton?.onClick.AddListener((() => SceneManager.LoadScene(mainMenuSceneName)));
+        gameOverReturnToMainMenuButton?.onClick.AddListener((() => SceneManager.LoadScene(mainMenuSceneName)));
+        resumeButton?.onClick.AddListener((() => pauseScreenHandler.TogglePauseScreen()));
     }
 }
