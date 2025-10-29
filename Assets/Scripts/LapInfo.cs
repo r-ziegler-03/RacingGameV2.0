@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LapInfo : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _text;
-    [SerializeField] private LapTracker _tracker;
+    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private LapTracker tracker;
 
-
+    // might be able to turn this into an event later on
     private void Update()
     {
-        _text.text = $"Lap: {_tracker.currentLap}";
+        text.text = $"Lap: {tracker.currentLap}";
     }
 }

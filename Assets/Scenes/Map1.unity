@@ -3301,8 +3301,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d106baf41674ec197eafff7e05fa04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapInfo
-  _text: {fileID: 1240659253}
-  _tracker: {fileID: 2065480450}
+  text: {fileID: 1240659253}
+  tracker: {fileID: 2065480450}
 --- !u!4 &1272331963
 Transform:
   m_ObjectHideFlags: 0

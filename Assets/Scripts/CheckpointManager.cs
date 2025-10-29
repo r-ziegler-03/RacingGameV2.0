@@ -7,11 +7,11 @@ public class CheckpointManager : MonoBehaviour
 
     public void PlayerThroughCheckpoint(LapTracker player, int checkpointIndex)
     {
+        // finds the next checkpoint that the player is supposed to go to
         int nextCheckpoint = (player.lastCheckpoint + 1) % checkpoints.Count;
 
         Debug.Log($"{player.name} hit checkpoint {checkpointIndex}, expected next = {nextCheckpoint}");
 
-        // Only accept correct sequence
         if (checkpointIndex == nextCheckpoint)
         {
             // If we looped back to the first checkpoint after finishing the last one

@@ -13,12 +13,13 @@ public class Checkpoint : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         LapTracker tracker = other.GetComponentInParent<LapTracker>();
+        //error checking
         if (tracker == null) return;
         if (_manager == null)
             _manager = FindAnyObjectByType<CheckpointManager>();
 
         if (_manager != null)
-        {
+        { 
             _manager.PlayerThroughCheckpoint(tracker, checkpointIndex);
         }
         else

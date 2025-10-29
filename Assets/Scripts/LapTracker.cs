@@ -5,12 +5,12 @@ public class LapTracker : MonoBehaviour
     public int currentLap = 1;
     public int lastCheckpoint = 0;
 
-    private CheckpointManager manager;
+    private CheckpointManager _manager;
 
     private void Start()
     {
-        manager = FindAnyObjectByType<CheckpointManager>();
-        Debug.Log($"{name} found manager: {manager != null}");
+        _manager = FindAnyObjectByType<CheckpointManager>();
+        Debug.Log($"{name} found manager: {_manager != null}");
     }
 
     public void CompleteLap()
@@ -20,3 +20,5 @@ public class LapTracker : MonoBehaviour
     }
     
 }
+
+
