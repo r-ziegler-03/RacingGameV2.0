@@ -877,7 +877,30 @@ namespace NWH.VehiclePhysics2.Input
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""Player1"",
+            ""bindingGroup"": ""Player1"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Gamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Player2"",
+            ""bindingGroup"": ""Player2"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Gamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
             // Vehicle Controls
             m_VehicleControls = asset.FindActionMap("Vehicle Controls", throwIfNotFound: true);
@@ -1390,6 +1413,32 @@ namespace NWH.VehiclePhysics2.Input
         /// Provides a new <see cref="VehicleControlsActions" /> instance referencing this action map.
         /// </summary>
         public VehicleControlsActions @VehicleControls => new VehicleControlsActions(this);
+        private int m_Player1SchemeIndex = -1;
+        /// <summary>
+        /// Provides access to the input control scheme.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputControlScheme" />
+        public InputControlScheme Player1Scheme
+        {
+            get
+            {
+                if (m_Player1SchemeIndex == -1) m_Player1SchemeIndex = asset.FindControlSchemeIndex("Player1");
+                return asset.controlSchemes[m_Player1SchemeIndex];
+            }
+        }
+        private int m_Player2SchemeIndex = -1;
+        /// <summary>
+        /// Provides access to the input control scheme.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputControlScheme" />
+        public InputControlScheme Player2Scheme
+        {
+            get
+            {
+                if (m_Player2SchemeIndex == -1) m_Player2SchemeIndex = asset.FindControlSchemeIndex("Player2");
+                return asset.controlSchemes[m_Player2SchemeIndex];
+            }
+        }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Vehicle Controls" which allows adding and removing callbacks.
         /// </summary>
