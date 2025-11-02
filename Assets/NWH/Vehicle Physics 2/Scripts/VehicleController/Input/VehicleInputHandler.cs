@@ -57,6 +57,8 @@ namespace NWH.VehiclePhysics2.Input
         ///     List of scene input providers.
         /// </summary>
         private List<InputProvider> _inputProviders = new List<InputProvider>();
+        public InputSystemVehicleInputProvider dedicatedProvider;
+
 
 
         /// <summary>
@@ -294,15 +296,50 @@ namespace NWH.VehiclePhysics2.Input
 
 
         public override void VC_Update()
+    {
+        base.VC_Update();
+
+        if (!autoSetInput)
         {
-            base.VC_Update();
+            CalculateInputSwappedValues();
+            return;
+        }
 
-            if (!autoSetInput)
-            {
-                CalculateInputSwappedValues();
-                return;
-            }
+        // Use a dedicated provider if set; otherwise, fall back to global combined input
+        if (dedicatedProvider != null)
+        {
+            Throttle = dedicatedProvider.Throttle();
+            states.throttleRaw = Throttle;
+            Brakes = dedicatedProvider.Brakes();
+            states.brakesRaw = Brakes;
+            Steering = dedicatedProvider.Steering();
+            states.steeringRaw = Steering;
+            Clutch = dedicatedProvider.Clutch();
+            states.clutchRaw = Clutch;
+            Handbrake = dedicatedProvider.Handbrake();
+            states.handbrakeRaw = Handbrake;
 
+            ShiftInto = dedicatedProvider.ShiftInto();
+            ShiftUp = dedicatedProvider.ShiftUp();
+            ShiftDown = dedicatedProvider.ShiftDown();
+
+            LeftBlinker = dedicatedProvider.LeftBlinker();
+            RightBlinker = dedicatedProvider.RightBlinker();
+            LowBeamLights = dedicatedProvider.LowBeamLights();
+            HighBeamLights = dedicatedProvider.HighBeamLights();
+            HazardLights = dedicatedProvider.HazardLights();
+            ExtraLights = dedicatedProvider.ExtraLights();
+            Horn = dedicatedProvider.Horn();
+            EngineStartStop = dedicatedProvider.EngineStartStop();
+
+            Boost = dedicatedProvider.Boost();
+            TrailerAttachDetach = dedicatedProvider.TrailerAttachDetach();
+            CruiseControl = dedicatedProvider.CruiseControl();
+            FlipOver = dedicatedProvider.FlipOver();
+        }
+        else
+        {
+            // fallback: original global logic
             Throttle = InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.Throttle());
             states.throttleRaw = Throttle;
             Brakes = InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.Brakes());
@@ -328,14 +365,15 @@ namespace NWH.VehiclePhysics2.Input
             EngineStartStop |= InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.EngineStartStop());
 
             Boost = InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.Boost());
-            TrailerAttachDetach = TrailerAttachDetach || InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.TrailerAttachDetach());
+            TrailerAttachDetach = TrailerAttachDetach ||
+                                  InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.TrailerAttachDetach());
             CruiseControl |= InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.CruiseControl());
             FlipOver = FlipOver || InputProvider.CombinedInput<VehicleInputProviderBase>(i => i.FlipOver());
-
-            inputModifyCallback.Invoke();
-
-            CalculateInputSwappedValues();
         }
+        inputModifyCallback.Invoke();
+        CalculateInputSwappedValues();
+    }
+
 
         private void CalculateInputSwappedValues()
         {

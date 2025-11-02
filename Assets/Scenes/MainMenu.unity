@@ -1744,7 +1744,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 264ed74499eaca54d8fb7d99d18a5d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyPlayerManager
-  joinedPlayers: []
 --- !u!1 &1769120368
 GameObject:
   m_ObjectHideFlags: 0
