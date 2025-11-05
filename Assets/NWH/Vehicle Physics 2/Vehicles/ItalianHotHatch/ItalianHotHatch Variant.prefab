@@ -1872,6 +1872,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1099257752}
   - component: {fileID: 1099257753}
+  - component: {fileID: 2696344506400098834}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -1915,6 +1916,22 @@ MonoBehaviour:
   cameras:
   - {fileID: 6830019112268429764}
   - {fileID: 1763287969}
+--- !u!114 &2696344506400098834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099257751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbb397819578c194babca402fb2bb59d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NWH.Common::NWH.Common.Cameras.MultiplayerCameraChanger
+  autoFindCameras: 1
+  currentCameraIndex: 0
+  cameras: []
+  playerIndex: 0
 --- !u!1 &1145509638
 GameObject:
   m_ObjectHideFlags: 0
@@ -5954,6 +5971,7 @@ MonoBehaviour:
     inputModifyCallback:
       m_PersistentCalls:
         m_Calls: []
+    dedicatedProvider: {fileID: 0}
   powertrain:
     clutch:
       name: Clutch
@@ -9807,31 +9825,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.98358
+      value: -0.00021388399
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.8419745
+      value: 2.039672
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.9745545
+      value: -6.187063
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7030022
+      value: 0.99666554
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.07606572
+      value: 0.08159577
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7035758
+      value: 0.000012550262
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.070590846
+      value: 0.000051636747
       objectReference: {fileID: 0}
     - target: {fileID: 5297882908838086830, guid: 4701ecfae761d464fa3c48783371094c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
