@@ -5580,6 +5580,7 @@ GameObject:
   - component: {fileID: 2557327687969158006}
   - component: {fileID: 7883872440650241567}
   - component: {fileID: 1600099203218609470}
+  - component: {fileID: 3511144573348743725}
   m_Layer: 0
   m_Name: ItalianHotHatch Variant
   m_TagString: Vehicle
@@ -6740,6 +6741,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: NWH.VehiclePhysics2::NWH.VehiclePhysics2.Input.InputSystemVehicleInputProvider
   mouseInput: 0
+--- !u!114 &3511144573348743725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3439652983212998199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 980750dcbc5494a0cb025083bce41897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LapTracker
+  playerId: 0
+  currentLap: 1
+  lastCheckpoint: -1
+  totalProgress: 0
 --- !u!1 &3517315879652141837
 GameObject:
   m_ObjectHideFlags: 0

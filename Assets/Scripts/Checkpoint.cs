@@ -2,30 +2,22 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private int checkpointIndex; // Set this in the inspector or dynamically
-    private CheckpointManager _manager;
+    [SerializeField] private int checkpointIndex;
+    private LapProgress manager;
 
     private void Start()
     {
-        _manager = FindAnyObjectByType<CheckpointManager>();
+        manager = FindAnyObjectByType<LapProgress>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        LapTracker tracker = other.GetComponentInParent<LapTracker>();
-        //error checking
+        PlayerLapTracker tracker = other.GetComponentInParent<PlayerLapTracker>();
         if (tracker == null) return;
-        if (_manager == null)
-            _manager = FindAnyObjectByType<CheckpointManager>();
 
-        if (_manager != null)
-        { 
-            _manager.PlayerThroughCheckpoint(tracker, checkpointIndex);
-        }
-        else
-        {
-            Debug.LogWarning($"[{name}] No CheckpointManager found in scene!");
-        }
+        manager ??= FindAnyObjectByType<LapProgress>();
+        manager?.PlayerThroughCheckpoint(tracker, checkpointIndex);
     }
 
+    public void SetIndex(int index) => checkpointIndex = index;
 }
