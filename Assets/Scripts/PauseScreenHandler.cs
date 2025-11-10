@@ -17,11 +17,13 @@ public class PauseScreenHandler : MonoBehaviour
     
     private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         inputActions.UIMapping.Enable();
         inputActions.UIMapping.Escape.performed += PauseGame;
     }
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         inputActions.UIMapping.Escape.performed -= PauseGame;
         inputActions.UIMapping.Disable();
     }
@@ -38,6 +40,15 @@ public class PauseScreenHandler : MonoBehaviour
         pauseScreen.blocksRaycasts = isPaused;
         pauseScreen.interactable = isPaused;
         Time.timeScale = isPaused ? 0 : 1;
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Time.timeScale = 1f;
+        isPaused = false;
+        pauseScreen.alpha = 0;
+        pauseScreen.blocksRaycasts = false;
+        pauseScreen.interactable = false;
     }
     
     

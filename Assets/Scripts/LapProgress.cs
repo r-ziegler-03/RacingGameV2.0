@@ -13,11 +13,12 @@ public class LapProgress : MonoBehaviour
     public event Action<List<PlayerLapTracker>> OnRaceProgressUpdated;
 
     public IReadOnlyList<PlayerLapTracker> Players => players;
+    public IReadOnlyList<Checkpoint> Checkpoints => checkpoints;
 
     private void Awake()
     {
         if (checkpoints.Count == 0)
-            checkpoints.AddRange(FindObjectsOfType<Checkpoint>());
+            checkpoints.AddRange(FindObjectsOfType<Checkpoint>(true));
 
         for (int i = 0; i < checkpoints.Count; i++)
             checkpoints[i].SetIndex(i);
@@ -35,13 +36,23 @@ public class LapProgress : MonoBehaviour
 
     private void HandlePlayerProgress(PlayerLapTracker player)
     {
-        OnRaceProgressUpdated?.Invoke(GetSortedRaceOrder());
+        UpdatePlayerPositions();
     }
 
     private void HandlePlayerLapComplete(PlayerLapTracker player)
     {
         Debug.Log($"{player.name} completed a lap!");
-        OnRaceProgressUpdated?.Invoke(GetSortedRaceOrder());
+        UpdatePlayerPositions();
+    }
+
+    private void UpdatePlayerPositions()
+    {
+        List<PlayerLapTracker> sorted = GetSortedRaceOrder();
+
+        for (int i = 0; i < sorted.Count; i++)
+            sorted[i].currentPosition = i + 1; // 1-based rank
+
+        OnRaceProgressUpdated?.Invoke(sorted);
     }
 
     public void PlayerThroughCheckpoint(PlayerLapTracker player, int checkpointIndex)
@@ -52,8 +63,8 @@ public class LapProgress : MonoBehaviour
         if (checkpointIndex != nextCheckpoint) return;
 
         bool completedLap = (checkpointIndex == 0 && player.lastCheckpoint == checkpoints.Count - 1);
-        player.lastCheckpoint = checkpointIndex;
-        player.UpdateProgress(checkpointIndex, checkpoints.Count);
+
+        player.OnCheckpointHit(checkpointIndex, checkpoints.Count);
 
         if (completedLap)
             player.CompleteLap();
@@ -62,7 +73,7 @@ public class LapProgress : MonoBehaviour
     public List<PlayerLapTracker> GetSortedRaceOrder()
     {
         List<PlayerLapTracker> sorted = new(players);
-        sorted.Sort((a, b) => b.totalProgress.CompareTo(a.totalProgress));
+        sorted.Sort((a, b) => b.totalProgress.CompareTo(a.totalProgress)); // descending
         return sorted;
     }
 }

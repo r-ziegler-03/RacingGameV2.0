@@ -27,6 +27,7 @@ public class LapUI : MonoBehaviour
         {
             PlayerLapTracker player = orderedPlayers[i];
             stringBuilder.AppendLine($"{i + 1}. {player.playerName} — Lap {player.currentLap}");
+            stringBuilder.AppendLine($"Position: {player.currentPosition}");
         }
 
         standingsText.text = stringBuilder.ToString();

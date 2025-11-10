@@ -50,6 +50,7 @@ public class VehicleSpawner : MonoBehaviour
         InputSystemVehicleInputProvider inputProvider = carGO.GetComponent<InputSystemVehicleInputProvider>();
         PlayerInput playerInput = carGO.GetComponent<PlayerInput>();
         PlayerLapTracker lapTracker = carGO.GetComponent<PlayerLapTracker>();
+        
         if (lapTracker != null)
         {
             lapTracker.playerName = player.playerName;

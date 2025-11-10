@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
 
 public enum PlayerIndex
@@ -31,6 +33,7 @@ public class ControllerJoining : MonoBehaviour
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject); // prevent duplicates
+            Debug.Log("Destroyed");
             return;
         }
 
@@ -42,12 +45,14 @@ public class ControllerJoining : MonoBehaviour
 
     private void OnEnable()
     {
+        //SceneManager.sceneLoaded += OnSceneLoaded;
         if (playerInputManager != null)
             playerInputManager.onPlayerJoined += OnPlayerJoined;
     }
 
     private void OnDisable()
     {
+        //SceneManager.sceneLoaded -= OnSceneLoaded;
         if (playerInputManager != null)
             playerInputManager.onPlayerJoined -= OnPlayerJoined;
     }
@@ -70,8 +75,9 @@ public class ControllerJoining : MonoBehaviour
         }
 
         // Assign next available PlayerIndex (wraps around if more than 4)
-        PlayerIndex assignedEnum = (PlayerIndex)(JoinedPlayers.Count % System.Enum.GetValues(typeof(PlayerIndex)).Length);
-		 
+        PlayerIndex assignedEnum =
+            (PlayerIndex)(JoinedPlayers.Count % System.Enum.GetValues(typeof(PlayerIndex)).Length);
+
 
         PlayerData newPlayer = new PlayerData
         {
@@ -97,6 +103,40 @@ public class ControllerJoining : MonoBehaviour
         {
             return true;
         }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainMenu")
+        {
+            ResetInputUsers();
+        }
+    }
+
+    public void ResetInputUsers()
+    {
+        var usersToRemove = new List<InputUser>();
+
+        foreach (var player in ControllerJoining.JoinedPlayers)
+        {
+            foreach (var user in InputUser.all)
+            {
+                if (user.pairedDevices.Contains(player.device))
+                {
+                    usersToRemove.Add(user);
+                    break;
+                }
+            }
+        }
+
+        foreach (var user in usersToRemove)
+        {
+            user.UnpairDevicesAndRemoveUser(); // ✅ instance method (new Input System)
+            Debug.Log($"[ControllerJoining] Unpaired user {user.id}");
+        }
+
+        ControllerJoining.JoinedPlayers.Clear();
+        Debug.Log("[ControllerJoining] Cleared all paired users and player data.");
     }
 }
 
