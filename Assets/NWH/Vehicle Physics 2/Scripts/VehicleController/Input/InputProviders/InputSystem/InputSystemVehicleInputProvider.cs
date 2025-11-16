@@ -56,7 +56,12 @@ namespace NWH.VehiclePhysics2.Input
             vehicleInputActions.VehicleControls.Horn.canceled += ctx => _horn = false;
             vehicleInputActions.VehicleControls.Boost.started += ctx => _boost = true;
             vehicleInputActions.VehicleControls.Boost.canceled += ctx => _boost = false;
+            vehicleInputActions.VehicleControls.Pause.performed += ctx =>
+            {
+                PauseScreenHandler.Instance.TogglePauseScreen();
+            };
         }
+        
 
         private void SetupGearShiftInput(InputAction gearShiftAction, int index)
         {

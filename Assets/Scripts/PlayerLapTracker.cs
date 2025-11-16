@@ -10,11 +10,13 @@ public class PlayerLapTracker : MonoBehaviour
     public Vector3 lastCheckpointPos;
     public float distanceToNextCheckpoint;
     public int currentPosition;
+    public bool playerFinished = false;
 
     public event Action<PlayerLapTracker> OnLapCompleted;
     public event Action<PlayerLapTracker> OnProgressUpdated;
 
     private LapProgress manager;
+    
 
     private void Start()
     {
@@ -60,8 +62,26 @@ public class PlayerLapTracker : MonoBehaviour
     public void CompleteLap()
     {
         currentLap++;
+        if (currentLap == manager.NumRaceLaps)
+        {
+            playerFinished = true;
+            manager.playersResults.Add(this);
+            GhostCar();
+            //this player has finished - set some bool to true
+            // invoke event
+        }
         OnLapCompleted?.Invoke(this);
     }
+    
+    private void GhostCar()
+    {
+        foreach (var col in GetComponentsInChildren<Collider>())
+        {
+            if (!(col is WheelCollider))
+                col.enabled = false;   // turns off car-to-car collisions
+        }
+    }
+
 }
 
 

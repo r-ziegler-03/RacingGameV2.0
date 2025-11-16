@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -23,5 +24,33 @@ public class PauseMenuNavigator : MonoBehaviour
         mainMenuButton?.onClick.AddListener((() => SceneManager.LoadScene(mainMenuSceneName)));
         gameOverReturnToMainMenuButton?.onClick.AddListener((() => SceneManager.LoadScene(mainMenuSceneName)));
         resumeButton?.onClick.AddListener((() => pauseScreenHandler.TogglePauseScreen()));
+        
+        screenSwitcher.OnScreenSwitched += HandleScreenSwitched;
+    }
+    
+    private void OnDestroy()
+    {
+        // Unsubscribe to avoid memory leaks
+        screenSwitcher.OnScreenSwitched -= HandleScreenSwitched;
+    }
+    
+    private void HandleScreenSwitched(ScreenTypes newScreen)
+    {
+        Button defaultButton = null;
+        switch (newScreen)
+        {
+            case ScreenTypes.Pause:
+                defaultButton = resumeButton; // first button in Main Menu
+                break;
+            case ScreenTypes.Settings:
+                defaultButton = returnToPauseMenuButton;
+                break;
+        }
+
+        if (defaultButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null); // clear first
+            EventSystem.current.SetSelectedGameObject(defaultButton.gameObject);
+        }
     }
 }

@@ -1,31 +1,36 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PauseScreenHandler : MonoBehaviour
 {
-    private UI_InputActions inputActions;
+    public static PauseScreenHandler Instance { get; private set; }
+    //private UI_InputActions inputActions;
     [SerializeField] private CanvasGroup pauseScreen;
+    [SerializeField] private CanvasGroup raceStandings;
     private bool isPaused;
+    
 
     private void Awake()
     {
-        inputActions = new UI_InputActions();
+        Instance = this;
+        //inputActions = new UI_InputActions();
     }
     
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        inputActions.UIMapping.Enable();
-        inputActions.UIMapping.Escape.performed += PauseGame;
+        //inputActions.Enable();
+        //inputActions.UIMapping.Escape.performed += PauseGame;
     }
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        inputActions.UIMapping.Escape.performed -= PauseGame;
-        inputActions.UIMapping.Disable();
+        //inputActions.UIMapping.Escape.performed -= PauseGame;
+        //inputActions.Dispose();
     }
     
     private void PauseGame(InputAction.CallbackContext context)
@@ -40,6 +45,9 @@ public class PauseScreenHandler : MonoBehaviour
         pauseScreen.blocksRaycasts = isPaused;
         pauseScreen.interactable = isPaused;
         Time.timeScale = isPaused ? 0 : 1;
+        raceStandings.alpha = !isPaused ? 1 : 0;
+        raceStandings.blocksRaycasts = !isPaused;
+        raceStandings.interactable = !isPaused;
     }
     
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

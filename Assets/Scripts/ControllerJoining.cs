@@ -27,6 +27,7 @@ public class ControllerJoining : MonoBehaviour
     public static List<PlayerData> JoinedPlayers = new List<PlayerData>();
 
     private PlayerInputManager playerInputManager;
+    private int maxPlayers = 2;
 
     private void Awake()
     {
@@ -45,21 +46,21 @@ public class ControllerJoining : MonoBehaviour
 
     private void OnEnable()
     {
-        //SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
         if (playerInputManager != null)
             playerInputManager.onPlayerJoined += OnPlayerJoined;
     }
 
     private void OnDisable()
     {
-        //SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         if (playerInputManager != null)
             playerInputManager.onPlayerJoined -= OnPlayerJoined;
     }
 
     private void OnPlayerJoined(PlayerInput playerInput)
     {
-        if (!IsMainMenu())
+        if (!IsMainMenu() || JoinedPlayers.Count == maxPlayers)
             return; // ignore joins outside the lobby
 
         InputDevice device = playerInput.devices.Count > 0 ? playerInput.devices[0] : null;
@@ -109,11 +110,13 @@ public class ControllerJoining : MonoBehaviour
     {
         if (scene.name == "MainMenu")
         {
-            ResetInputUsers();
+            //ResetInputUsers();
+            if (playerInputManager != null)
+                playerInputManager.EnableJoining();
         }
     }
 
-    public void ResetInputUsers()
+    public static void ResetInputUsers()
     {
         var usersToRemove = new List<InputUser>();
 
@@ -138,6 +141,24 @@ public class ControllerJoining : MonoBehaviour
         ControllerJoining.JoinedPlayers.Clear();
         Debug.Log("[ControllerJoining] Cleared all paired users and player data.");
     }
+    public void PrepareForRace()
+    {
+        // Unpair menu InputUsers if you want a clean slate for cars
+        foreach (var user in InputUser.all)
+        {
+            // Only unpair users whose devices are in JoinedPlayers
+            foreach (var player in JoinedPlayers)
+            {
+                if (user.pairedDevices.Contains(player.device))
+                {
+                    user.UnpairDevicesAndRemoveUser();
+                    break;
+                }
+            }
+        }
+        Debug.Log("[ControllerJoining] Prepared for race, all menu InputUsers unpaired.");
+    }
+
 }
 
 

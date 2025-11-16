@@ -7,10 +7,15 @@ using UnityEngine;
 
 public class LapProgress : MonoBehaviour
 {
+    [SerializeField] private GameResultsHandler gameResultsHandler;
     [SerializeField] private List<Checkpoint> checkpoints = new();
     [SerializeField] private List<PlayerLapTracker> players = new();
+    [field: SerializeField] 
+    public int NumRaceLaps { get; private set; } = 2;
 
+    public List<PlayerLapTracker> playersResults = new();
     public event Action<List<PlayerLapTracker>> OnRaceProgressUpdated;
+    public event Action<PlayerLapTracker> OnRaceCompleted;
 
     public IReadOnlyList<PlayerLapTracker> Players => players;
     public IReadOnlyList<Checkpoint> Checkpoints => checkpoints;
@@ -22,6 +27,13 @@ public class LapProgress : MonoBehaviour
 
         for (int i = 0; i < checkpoints.Count; i++)
             checkpoints[i].SetIndex(i);
+        OnRaceCompleted += EndOfRace;
+    }
+
+    private void EndOfRace(PlayerLapTracker obj)
+    {
+        gameResultsHandler.handle();
+        //new panel showing results
     }
 
     public void RegisterPlayer(PlayerLapTracker tracker)
@@ -33,15 +45,21 @@ public class LapProgress : MonoBehaviour
             tracker.OnLapCompleted += HandlePlayerLapComplete;
         }
     }
+    
 
     private void HandlePlayerProgress(PlayerLapTracker player)
     {
         UpdatePlayerPositions();
     }
+    
 
     private void HandlePlayerLapComplete(PlayerLapTracker player)
     {
         Debug.Log($"{player.name} completed a lap!");
+        if (players.TrueForAll(p => p.playerFinished))
+        {
+            OnRaceCompleted?.Invoke(null);
+        }
         UpdatePlayerPositions();
     }
 

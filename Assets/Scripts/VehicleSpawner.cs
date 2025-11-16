@@ -16,6 +16,7 @@ public class VehicleSpawner : MonoBehaviour
 
     private void Start()
     {
+        AudioListener.pause = false;
         if (_spawned) return;
         _spawned = true;
 

@@ -242,7 +242,7 @@ namespace NWH.VehiclePhysics2.Input
                     ""name"": ""ShiftIntoR1"",
                     ""type"": ""Button"",
                     ""id"": ""fdf654af-5894-4876-9565-8e64e1f53efa"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -350,6 +350,15 @@ namespace NWH.VehiclePhysics2.Input
                     ""name"": ""CruiseControl"",
                     ""type"": ""Button"",
                     ""id"": ""c2c193e5-0ba5-4cdc-a189-84ccae17d118"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""d163ea82-5106-4e76-9392-ff54bfa530f1"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -873,6 +882,28 @@ namespace NWH.VehiclePhysics2.Input
                     ""action"": ""Brakes"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a8333b0f-3fd1-4312-9af6-5007f36cd726"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""78ca0288-6f4a-4253-8b2a-6a1c056c564b"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -933,6 +964,7 @@ namespace NWH.VehiclePhysics2.Input
             m_VehicleControls_FlipOver = m_VehicleControls.FindAction("FlipOver", throwIfNotFound: true);
             m_VehicleControls_Boost = m_VehicleControls.FindAction("Boost", throwIfNotFound: true);
             m_VehicleControls_CruiseControl = m_VehicleControls.FindAction("CruiseControl", throwIfNotFound: true);
+            m_VehicleControls_Pause = m_VehicleControls.FindAction("Pause", throwIfNotFound: true);
         }
 
         ~@VehicleInputActions()
@@ -1042,6 +1074,7 @@ namespace NWH.VehiclePhysics2.Input
         private readonly InputAction m_VehicleControls_FlipOver;
         private readonly InputAction m_VehicleControls_Boost;
         private readonly InputAction m_VehicleControls_CruiseControl;
+        private readonly InputAction m_VehicleControls_Pause;
         /// <summary>
         /// Provides access to input actions defined in input action map "Vehicle Controls".
         /// </summary>
@@ -1170,6 +1203,10 @@ namespace NWH.VehiclePhysics2.Input
             /// </summary>
             public InputAction @CruiseControl => m_Wrapper.m_VehicleControls_CruiseControl;
             /// <summary>
+            /// Provides access to the underlying input action "VehicleControls/Pause".
+            /// </summary>
+            public InputAction @Pause => m_Wrapper.m_VehicleControls_Pause;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_VehicleControls; }
@@ -1282,6 +1319,9 @@ namespace NWH.VehiclePhysics2.Input
                 @CruiseControl.started += instance.OnCruiseControl;
                 @CruiseControl.performed += instance.OnCruiseControl;
                 @CruiseControl.canceled += instance.OnCruiseControl;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
 
             /// <summary>
@@ -1380,6 +1420,9 @@ namespace NWH.VehiclePhysics2.Input
                 @CruiseControl.started -= instance.OnCruiseControl;
                 @CruiseControl.performed -= instance.OnCruiseControl;
                 @CruiseControl.canceled -= instance.OnCruiseControl;
+                @Pause.started -= instance.OnPause;
+                @Pause.performed -= instance.OnPause;
+                @Pause.canceled -= instance.OnPause;
             }
 
             /// <summary>
@@ -1649,6 +1692,13 @@ namespace NWH.VehiclePhysics2.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnCruiseControl(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPause(InputAction.CallbackContext context);
         }
     }
 }

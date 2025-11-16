@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public enum ScreenTypes
 {
@@ -26,6 +28,7 @@ public class ScreenSwitcher : MonoBehaviour
 
     private Dictionary<ScreenTypes, CanvasGroup> screensDict = new();
     private CanvasGroup currentScreen;
+    public event Action<ScreenTypes> OnScreenSwitched;
 
     private void Awake()
     {
@@ -60,6 +63,7 @@ public class ScreenSwitcher : MonoBehaviour
 
         currentScreen = newScreen;
         SetScreenEnabled(currentScreen, true);
+        OnScreenSwitched?.Invoke(newScreenType);
     }
 
     private void SetScreenEnabled(CanvasGroup screen, bool enabled)

@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,12 @@ public class LapUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI standingsText;
     [SerializeField] private LapProgress manager;
+    [SerializeField] private CanvasGroup raceStandingsUI;
+
+    private void Awake()
+    {
+        raceStandingsUI.gameObject.SetActive(true);
+    }
 
     private void OnEnable()
     {
