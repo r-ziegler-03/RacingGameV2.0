@@ -3,11 +3,11 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     [SerializeField] private int checkpointIndex;
-    private LapProgress manager;
+    private LapProgress lapProgress;
 
     private void Start()
     {
-        manager = FindAnyObjectByType<LapProgress>();
+        lapProgress = FindAnyObjectByType<LapProgress>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -15,8 +15,8 @@ public class Checkpoint : MonoBehaviour
         PlayerLapTracker tracker = other.GetComponentInParent<PlayerLapTracker>();
         if (tracker == null) return;
 
-        manager ??= FindAnyObjectByType<LapProgress>();
-        manager?.PlayerThroughCheckpoint(tracker, checkpointIndex);
+        lapProgress ??= FindAnyObjectByType<LapProgress>();
+        lapProgress?.PlayerThroughCheckpoint(tracker, checkpointIndex);
     }
 
     public void SetIndex(int index) => checkpointIndex = index;

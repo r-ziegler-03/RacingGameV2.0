@@ -4,15 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum ScreenTypes
-{
-    Menu,
-    Settings,
-    Selection,
-    Pause,
-    GameOver,
-}
-
 [Serializable]
 public class ScreenEntry
 {

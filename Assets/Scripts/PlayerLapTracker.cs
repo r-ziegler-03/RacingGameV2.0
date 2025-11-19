@@ -7,27 +7,27 @@ public class PlayerLapTracker : MonoBehaviour
     public int currentLap = 1;
     public int lastCheckpoint = -1;
     public float totalProgress;
-    public Vector3 lastCheckpointPos;
-    public float distanceToNextCheckpoint;
+    private Vector3 lastCheckpointPos;
+    private float distanceToNextCheckpoint;
     public int currentPosition;
     public bool playerFinished = false;
 
     public event Action<PlayerLapTracker> OnLapCompleted;
     public event Action<PlayerLapTracker> OnProgressUpdated;
 
-    private LapProgress manager;
+    private LapProgress lapProgress;
     
-
+    
     private void Start()
     {
-        manager = FindAnyObjectByType<LapProgress>();
-        if (manager != null)
-            manager.RegisterPlayer(this);
+        lapProgress = FindAnyObjectByType<LapProgress>();
+        if (lapProgress != null)
+            lapProgress.RegisterPlayer(this);
     }
 
     private void Update()
     {
-        if (manager != null && lastCheckpoint >= 0)
+        if (lapProgress != null && lastCheckpoint >= 0)
             RecalculateLiveProgress();
     }
 
@@ -37,10 +37,22 @@ public class PlayerLapTracker : MonoBehaviour
         lastCheckpoint = checkpointIndex;
         RecalculateLiveProgress(); // sync right away on hit
     }
+    
+    public void CompleteLap()
+    {
+        currentLap++;
+        if (currentLap == lapProgress.numRaceLaps)
+        {
+            playerFinished = true;
+            lapProgress.playersResults.Add(this);
+            GhostCar();
+        }
+        OnLapCompleted?.Invoke(this);
+    }
 
     private void RecalculateLiveProgress()
     {
-        var checkpoints = manager.Checkpoints;
+        var checkpoints = lapProgress.Checkpoints;
         int total = checkpoints.Count;
         int nextIndex = (lastCheckpoint + 1) % total;
 
@@ -57,20 +69,6 @@ public class PlayerLapTracker : MonoBehaviour
         lastCheckpointPos = from;
 
         OnProgressUpdated?.Invoke(this);
-    }
-
-    public void CompleteLap()
-    {
-        currentLap++;
-        if (currentLap == manager.NumRaceLaps)
-        {
-            playerFinished = true;
-            manager.playersResults.Add(this);
-            GhostCar();
-            //this player has finished - set some bool to true
-            // invoke event
-        }
-        OnLapCompleted?.Invoke(this);
     }
     
     private void GhostCar()

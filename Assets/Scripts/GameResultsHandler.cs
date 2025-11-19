@@ -19,12 +19,18 @@ public class GameResultsHandler : MonoBehaviour
         gameOverReturnToMainMenuButton?.onClick.AddListener(() => SceneManager.LoadScene(mainMenuSceneName));
     }
 
-    public void handle()
+    public void handleGameOver()
     {
         screenSwitcher.SwitchScreen(ScreenTypes.GameOver);
         AudioListener.pause = true;
         raceStandingsUI.gameObject.SetActive(false);
         Time.timeScale = 0;
+        ResultsToText();
+
+    }
+
+    private void ResultsToText()
+    {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.AppendLine($"Race Results: ");
         for (int i = 0; i < lapProgress.playersResults.Count; i++)
@@ -32,6 +38,5 @@ public class GameResultsHandler : MonoBehaviour
             stringBuilder.AppendLine($"{i + 1} --> {lapProgress.playersResults[i].playerName}");
         }
         resultsToText.text = stringBuilder.ToString();
-
     }
 }

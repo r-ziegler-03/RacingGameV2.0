@@ -1,17 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
 
-public enum PlayerIndex
-{
-    Player1,
-    Player2,
-    Player3,
-    Player4
-}
 
 [System.Serializable]
 public class PlayerData
@@ -25,7 +20,9 @@ public class ControllerJoining : MonoBehaviour
 {
     public static ControllerJoining Instance { get; private set; }
     public static List<PlayerData> JoinedPlayers = new List<PlayerData>();
-
+    [HideInInspector] public int lapCount = 0;
+    public event Action OnPlayerJoinedNotification;
+    
     private PlayerInputManager playerInputManager;
     private int maxPlayers = 2;
 
@@ -60,39 +57,74 @@ public class ControllerJoining : MonoBehaviour
 
     private void OnPlayerJoined(PlayerInput playerInput)
     {
-        if (!IsMainMenu() || JoinedPlayers.Count == maxPlayers)
-            return; // ignore joins outside the lobby
+        if (!CanAcceptJoin(playerInput))
+            return;
 
-        InputDevice device = playerInput.devices.Count > 0 ? playerInput.devices[0] : null;
+        InputDevice device = GetDeviceFromPlayer(playerInput);
 
-        // Check if this device has already joined
-        bool alreadyJoined = JoinedPlayers.Exists(p => p.device == device);
-
-        if (alreadyJoined || (JoinedPlayers.Count == 2))
+        if (ShouldRejectDevice(device))
         {
-            Debug.Log($"Device {device} is already joined.");
-            Destroy(playerInput.gameObject);
+            RejectPlayerJoin(playerInput, device);
             return;
         }
 
-        // Assign next available PlayerIndex (wraps around if more than 4)
+        PlayerData newPlayer = CreatePlayerData(playerInput, device);
+        RegisterPlayer(newPlayer);
+
+        CleanupAutoPlayerObject(playerInput);
+        OnPlayerJoinedNotification?.Invoke();
+
+
+    }
+    
+    private bool CanAcceptJoin(PlayerInput playerInput)
+    {
+        return IsMainMenu() && JoinedPlayers.Count < maxPlayers;
+    }
+
+    private InputDevice GetDeviceFromPlayer(PlayerInput playerInput)
+    {
+        return playerInput.devices.Count > 0 ? playerInput.devices[0] : null;
+    }
+
+    private bool ShouldRejectDevice(InputDevice device)
+    {
+        bool alreadyJoined = JoinedPlayers.Exists(p => p.device == device);
+        bool lobbyFull = JoinedPlayers.Count == 2; // your custom rule
+
+        return alreadyJoined || lobbyFull;
+    }
+
+    private void RejectPlayerJoin(PlayerInput playerInput, InputDevice device)
+    {
+        Debug.Log($"Device {device} is already joined.");
+        Destroy(playerInput.gameObject);
+    }
+
+    private PlayerData CreatePlayerData(PlayerInput playerInput, InputDevice device)
+    {
         PlayerIndex assignedEnum =
             (PlayerIndex)(JoinedPlayers.Count % System.Enum.GetValues(typeof(PlayerIndex)).Length);
 
-
-        PlayerData newPlayer = new PlayerData
+        return new PlayerData
         {
             device = device,
             playerIndex = playerInput.playerIndex,
             playerName = assignedEnum
         };
+    }
 
-        JoinedPlayers.Add(newPlayer);
-        Debug.Log($"Player {newPlayer.playerName} joined using {device}");
+    private void RegisterPlayer(PlayerData data)
+    {
+        JoinedPlayers.Add(data);
+        Debug.Log($"Player {data.playerName} joined using {data.device}");
+    }
 
-        // Destroy the auto-instantiated player prefab
+    private void CleanupAutoPlayerObject(PlayerInput playerInput)
+    {
         Destroy(playerInput.gameObject);
     }
+
 
     private bool IsMainMenu()
     {
@@ -110,7 +142,6 @@ public class ControllerJoining : MonoBehaviour
     {
         if (scene.name == "MainMenu")
         {
-            //ResetInputUsers();
             if (playerInputManager != null)
                 playerInputManager.EnableJoining();
         }
@@ -134,30 +165,15 @@ public class ControllerJoining : MonoBehaviour
 
         foreach (var user in usersToRemove)
         {
-            user.UnpairDevicesAndRemoveUser(); // ✅ instance method (new Input System)
+            user.UnpairDevicesAndRemoveUser();
             Debug.Log($"[ControllerJoining] Unpaired user {user.id}");
         }
 
         ControllerJoining.JoinedPlayers.Clear();
         Debug.Log("[ControllerJoining] Cleared all paired users and player data.");
     }
-    public void PrepareForRace()
-    {
-        // Unpair menu InputUsers if you want a clean slate for cars
-        foreach (var user in InputUser.all)
-        {
-            // Only unpair users whose devices are in JoinedPlayers
-            foreach (var player in JoinedPlayers)
-            {
-                if (user.pairedDevices.Contains(player.device))
-                {
-                    user.UnpairDevicesAndRemoveUser();
-                    break;
-                }
-            }
-        }
-        Debug.Log("[ControllerJoining] Prepared for race, all menu InputUsers unpaired.");
-    }
+    
+    
 
 }
 

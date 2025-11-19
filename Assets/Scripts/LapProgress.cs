@@ -10,8 +10,7 @@ public class LapProgress : MonoBehaviour
     [SerializeField] private GameResultsHandler gameResultsHandler;
     [SerializeField] private List<Checkpoint> checkpoints = new();
     [SerializeField] private List<PlayerLapTracker> players = new();
-    [field: SerializeField] 
-    public int NumRaceLaps { get; private set; } = 2;
+    public int numRaceLaps = 0;
 
     public List<PlayerLapTracker> playersResults = new();
     public event Action<List<PlayerLapTracker>> OnRaceProgressUpdated;
@@ -28,11 +27,13 @@ public class LapProgress : MonoBehaviour
         for (int i = 0; i < checkpoints.Count; i++)
             checkpoints[i].SetIndex(i);
         OnRaceCompleted += EndOfRace;
+        numRaceLaps = ControllerJoining.Instance.lapCount;
+        Debug.Log($"Laps set to {numRaceLaps}.");
     }
 
     private void EndOfRace(PlayerLapTracker obj)
     {
-        gameResultsHandler.handle();
+        gameResultsHandler.handleGameOver();
         //new panel showing results
     }
 

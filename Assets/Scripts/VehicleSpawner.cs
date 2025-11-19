@@ -39,32 +39,64 @@ public class VehicleSpawner : MonoBehaviour
 
     private IEnumerator SpawnCar_Manual(PlayerData player, Transform spawnPoint, int index)
     {
-        // Spawn the car prefab
+        GameObject carGO = SpawnCarObject(spawnPoint, index, player);
+        yield return null; // wait for initialization
+
+        if (!TryGetCarComponents(carGO, out VehicleController vc,
+                out InputSystemVehicleInputProvider provider,
+                out PlayerInput pInput,
+                out PlayerLapTracker lap))
+            yield break;
+
+        InitializeLapTracker(lap, player, index);
+        SetupInputForCar(player, vc, provider);
+        SetupCameraForCar(carGO, index);
+
+        Debug.Log($"[SpawnCar_Manual] Completed setup for Player {index}");
+    }
+    private GameObject SpawnCarObject(Transform spawnPoint, int index, PlayerData player)
+    {
         GameObject carGO = Instantiate(carPrefab, spawnPoint.position, spawnPoint.rotation);
         carGO.name = $"Car_{index}_Player{player.playerIndex}";
         Debug.Log($"[SpawnCar_Manual] Car instantiated: {carGO.name}");
-
-        yield return null; // Let Unity initialize everything for one frame
-
-        // Grab necessary components
-        VehicleController vehicleController = carGO.GetComponent<VehicleController>();
-        InputSystemVehicleInputProvider inputProvider = carGO.GetComponent<InputSystemVehicleInputProvider>();
-        PlayerInput playerInput = carGO.GetComponent<PlayerInput>();
-        PlayerLapTracker lapTracker = carGO.GetComponent<PlayerLapTracker>();
-        
-        if (lapTracker != null)
-        {
-            lapTracker.playerName = player.playerName;
-            Debug.Log($"[SpawnCar_Manual] LapTracker assigned to Player {index}");
-        }
+        return carGO;
+    }
+    
+    private bool TryGetCarComponents(
+        GameObject carGO,
+        out VehicleController vehicleController,
+        out InputSystemVehicleInputProvider inputProvider,
+        out PlayerInput playerInput,
+        out PlayerLapTracker lapTracker)
+    {
+        vehicleController = carGO.GetComponent<VehicleController>();
+        inputProvider = carGO.GetComponent<InputSystemVehicleInputProvider>();
+        playerInput = carGO.GetComponent<PlayerInput>();
+        lapTracker = carGO.GetComponent<PlayerLapTracker>();
 
         if (vehicleController == null || inputProvider == null || playerInput == null)
         {
             Debug.LogError($"[SpawnCar_Manual] Missing required components on {carGO.name}");
-            yield break;
+            return false;
         }
 
-        // Set up unique InputUser and actions for this player
+        return true;
+    }
+    
+    private void InitializeLapTracker(PlayerLapTracker lapTracker, PlayerData player, int index)
+    {
+        if (lapTracker == null)
+            return;
+
+        lapTracker.playerName = player.playerName;
+        Debug.Log($"[SpawnCar_Manual] LapTracker assigned to Player {index}");
+    }
+    
+    private void SetupInputForCar(
+        PlayerData player,
+        VehicleController vc,
+        InputSystemVehicleInputProvider provider)
+    {
         VehicleInputActions actions = new VehicleInputActions();
         actions.Enable();
 
@@ -72,26 +104,23 @@ public class VehicleSpawner : MonoBehaviour
         InputUser.PerformPairingWithDevice(player.device, user);
         user.AssociateActionsWithUser(actions);
 
-        inputProvider.Initialize(actions);
-        vehicleController.input.dedicatedProvider = inputProvider;
-
-        // --- SPLIT-SCREEN CAMERA SETUP ---
-        // Find the MultiplayerCameraChanger attached to the car or its children
-        MultiplayerCameraChanger cameraChanger = carGO.GetComponentInChildren<MultiplayerCameraChanger>();
-
-        if (cameraChanger != null)
-        {
-            cameraChanger.playerIndex = index; // 0-based player number
-            cameraChanger.currentCameraIndex = 0; // default camera
-            cameraChanger.ForceEnable(playerCount); // activates correct viewport rect
-            Debug.Log($"[SpawnCar_Manual] Camera assigned for Player {index}");
-        }
-        else
+        provider.Initialize(actions);
+        vc.input.dedicatedProvider = provider;
+    }
+    private void SetupCameraForCar(GameObject carGO, int index)
+    {
+        MultiplayerCameraChanger changer = carGO.GetComponentInChildren<MultiplayerCameraChanger>();
+        if (changer == null)
         {
             Debug.LogWarning($"[SpawnCar_Manual] No MultiplayerCameraChanger found for {carGO.name}");
+            return;
         }
 
-        Debug.Log($"[SpawnCar_Manual] Completed setup for Player {index}");
+        changer.playerIndex = index;
+        changer.currentCameraIndex = 0;
+        changer.ForceEnable(playerCount);
+
+        Debug.Log($"[SpawnCar_Manual] Camera assigned for Player {index}");
     }
 }
 
