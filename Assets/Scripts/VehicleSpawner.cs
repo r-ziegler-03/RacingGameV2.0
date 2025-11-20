@@ -5,11 +5,13 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using System.Collections;
 using NWH.Common.Cameras;
+using TMPro;
 
 public class VehicleSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject carPrefab;
     [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private TextMeshProUGUI countdownText;
 
     private bool _spawned;
     private int playerCount;
@@ -35,6 +37,8 @@ public class VehicleSpawner : MonoBehaviour
             Transform spawnPoint = spawnPoints[i % spawnPoints.Length];
             StartCoroutine(SpawnCar_Manual(player, spawnPoint, i));
         }
+        countdownText.gameObject.SetActive(true);
+        StartCoroutine(RaceCountdown());
     }
 
     private IEnumerator SpawnCar_Manual(PlayerData player, Transform spawnPoint, int index)
@@ -121,6 +125,28 @@ public class VehicleSpawner : MonoBehaviour
         changer.ForceEnable(playerCount);
 
         Debug.Log($"[SpawnCar_Manual] Camera assigned for Player {index}");
+    }
+
+    private IEnumerator RaceCountdown()
+    {
+        // Freeze the world
+        Time.timeScale = 0f;
+        Debug.Log("Race Frozen — Countdown Begins");
+
+        // 5-second real-time countdown
+        float time = 5f;
+        while (time > 0f)
+        {
+            countdownText.text = time.ToString();
+            Debug.Log($"Countdown: {(int)time}");
+            yield return new WaitForSecondsRealtime(1f);
+            time -= 1f;
+        }
+
+        // Unfreeze
+        Time.timeScale = 1f;
+        countdownText.gameObject.SetActive(false);
+        Debug.Log("Race START!");
     }
 }
 

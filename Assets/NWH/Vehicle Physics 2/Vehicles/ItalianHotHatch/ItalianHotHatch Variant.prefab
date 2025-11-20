@@ -6697,7 +6697,7 @@ MonoBehaviour:
   lastCollisionTime: -1
   meshDeform: 1
   smokeParticleSystems: []
-  visualOnly: 0
+  visualOnly: 1
 --- !u!114 &7883872440650241567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6753,10 +6753,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 980750dcbc5494a0cb025083bce41897, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapTracker
-  playerId: 0
+  playerName: 0
   currentLap: 1
   lastCheckpoint: -1
   totalProgress: 0
+  currentPosition: 0
+  playerFinished: 0
 --- !u!1 &3517315879652141837
 GameObject:
   m_ObjectHideFlags: 0

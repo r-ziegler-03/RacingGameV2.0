@@ -18,6 +18,8 @@ public class MenuNavigator : MonoBehaviour
     [Header("Main Menu")]
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button setupRaceButton;
+
+    [SerializeField] private Button exitApplicationButton;
     // Settings Menu
     [Header("Settings Menu")]
     [SerializeField] private Button settingsBackToMainMenuButton;
@@ -59,6 +61,7 @@ public class MenuNavigator : MonoBehaviour
 
         settingsButton.onClick.AddListener(() => screenSwitcher.SwitchScreen(ScreenTypes.Settings));
         setupRaceButton.onClick.AddListener(() => screenSwitcher.SwitchScreen(ScreenTypes.Selection));
+        exitApplicationButton.onClick.AddListener(() => Application.Quit());
         settingsBackToMainMenuButton.onClick.AddListener(() => screenSwitcher.SwitchScreen(ScreenTypes.Menu));
         selectionBackToMainMenuButton.onClick.AddListener(() => screenSwitcher.SwitchScreen(ScreenTypes.Menu));
         startRaceButton.onClick.AddListener(StartRace);
